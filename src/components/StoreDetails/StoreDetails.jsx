@@ -9,12 +9,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { FavoriteButton } from "../FavoriteButton/FavoriteButton";
 import { Reviews } from "../Reviews/Reviews";
 import ReviewsDrawer from "../ReviewsDrawer/ReviewsDrawer";
-import { Box, Grid, Rating } from "@mui/material";
-import { Stack } from "@mui/system";
+import { Grid } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
-import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import { StoreRating } from "../Rating/StoreRating";
 
 const mapsBaseURL = "https://www.google.com/maps/dir/";
 
@@ -40,6 +38,10 @@ export const StoreDetails = () => {
     setCurrentModal(modalName);
   };
 
+  const refreshPage = () => {
+    window.location.reload(false);
+  };
+
   if (error) {
     console.log(error);
   }
@@ -53,14 +55,14 @@ export const StoreDetails = () => {
       <div className="slider-image">
         <ImageSlider images={data.images} />
       </div>
-      <Stack direction="row">
-        <h1 id="details-title" width="80%">
-          {data.name}
-        </h1>
+      <div className="store-detail">
+        <div className="details-title">
+          <h1>{data.name}</h1>
+        </div>
         <div className="fav-btn">
           {authContext.loggedIn && <FavoriteButton store={data} />}
         </div>
-      </Stack>
+      </div>
       <div className="address-container">
         <a
           href={getNavigationURL(locationContext.settings, data.location)}
@@ -70,28 +72,7 @@ export const StoreDetails = () => {
         </a>
       </div>
       <div className="rate">
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Rating
-            name="customized-color"
-            value={data.rating}
-            getLabelText={(value) => `${value} Cup${value !== 1 ? "s" : ""}`}
-            precision={0.5}
-            icon={<FreeBreakfastIcon fontSize="inherit" />}
-            emptyIcon={<FreeBreakfastOutlinedIcon fontSize="inherit" />}
-            readOnly
-            sx={{
-              "& .MuiRating-iconFilled": {
-                color: "#685618",
-              },
-            }}
-          />
-          <Box sx={{ ml: 1 }}>{data.rating}</Box>
-        </Box>
+        <StoreRating storeId={storeId} />
       </div>
       <Grid container sx={{ ml: "5%" }}>
         {data.delivery && (
@@ -115,7 +96,6 @@ export const StoreDetails = () => {
           </Grid>
         )}
       </Grid>
-
       <div className="time-container">
         {data.openingHours &&
           data.openingHours.map((hours, i) => (
@@ -129,23 +109,28 @@ export const StoreDetails = () => {
           {data.description ? data.description : "No description available"}
         </p>
       </div>
-
-      <ReviewsDrawer storeId={storeId} />
-
-      {authContext.loggedIn && (
-        <button id="reviews-btn2" onClick={() => handleSwitchModal("review")}>
-          <RateReviewIcon
-            sx={{
-              "& .MuiRating-iconFilled": {
-                color: "white",
-              },
-            }}
-          />
-        </button>
-      )}
+      <div className="review-container">
+        <ReviewsDrawer storeId={storeId} />
+        {authContext.loggedIn && (
+          <button id="reviews-btn2" onClick={() => handleSwitchModal("review")}>
+            <RateReviewIcon
+              sx={{
+                "& .MuiRating-iconFilled": {
+                  color: "white",
+                },
+              }}
+            />
+          </button>
+        )}
+      </div>
       {currentModal === "review" && (
-        <Reviews handleSwitchModal={handleSwitchModal} />
-      )}
+        <Reviews
+          storeId={storeId}
+          storeImage={data.images[0]}
+          handleSwitchModal={handleSwitchModal}
+          onSave={refreshPage}
+        />
+      )}{" "}
     </div>
   );
 };
