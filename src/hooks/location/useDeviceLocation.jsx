@@ -72,7 +72,11 @@ const useDeviceLocation = () => {
         );
         onSuccess(pos?.coords?.latitude, pos?.coords?.longitude);
       },
-      (_error) => {
+      (error) => {
+        console.log(
+          "🚀 ~ file: useDeviceLocation.jsx:76 ~ updateLocation ~ error:",
+          error
+        );
         ipLocationFallback();
       }
     );
