@@ -4,10 +4,13 @@ import { StoresList } from "../components/StoresList";
 import { ScrollBox } from "../components/ScrollBox/ScrollBox";
 import { useContext, useState } from "react";
 import { LocationContext } from "../context/LocationContext";
+import { TopLocation } from "../components/TopLocation/TopLocation";
 
 export const HomePage = () => {
   const { settings, loading } = useContext(LocationContext);
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState(
+    sessionStorage.getItem("lastSetFilter") ?? "aroundyou"
+  );
 
   const onFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
@@ -15,6 +18,7 @@ export const HomePage = () => {
 
   return (
     <>
+      <TopLocation locationSettings={settings} />
       <Filters filter={filter} onFilterChange={onFilterChange} />
       {!loading && <Search />}
       <ScrollBox>

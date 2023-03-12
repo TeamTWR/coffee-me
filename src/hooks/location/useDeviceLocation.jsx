@@ -59,24 +59,14 @@ const useDeviceLocation = () => {
   const updateLocation = () => {
     console.log("getDeviceLocation called");
     if (!("geolocation" in navigator)) {
-      console.log(
-        "🚀 ~ file: useDeviceLocation.jsx:62 ~ updateLocation ~ !(geolocation in navigator):"
-      );
       ipLocationFallback();
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        console.log(
-          "🚀 ~ file: useDeviceLocation.jsx:77 ~ updateLocation ~ pos:",
-          pos
-        );
         onSuccess(pos?.coords?.latitude, pos?.coords?.longitude);
       },
       (error) => {
-        console.log(
-          "🚀 ~ file: useDeviceLocation.jsx:76 ~ updateLocation ~ error:",
-          error
-        );
+        console.log(error);
         ipLocationFallback();
       }
     );
